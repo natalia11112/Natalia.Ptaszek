@@ -1,0 +1,13 @@
+0 Grass.png
+1 GrassCliffLeft.png
+2 GrassCliffMid.png
+3 GrassCliffRight.png
+4 GrassLeft.png
+5 GrassMid.png
+6 GrassRight.png
+7 DirtLeft.png
+8 Dirt.png
+9 DirtRight.png
+A DirtLeftCorner.png
+B DirtDown.png
+C DirtRightCorner.png
