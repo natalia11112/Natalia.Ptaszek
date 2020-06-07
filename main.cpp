@@ -5,15 +5,7 @@
 #include <vector>
 
 int main() {
-    sf::RenderWindow window(sf::VideoMode(800, 400), "My window");
-    sf::Texture dirt;
-    if(!dirt.loadFromFile("Dirt.png")){
-        return 1;
-    }
-    sf::Texture grass;
-    if(!grass.loadFromFile("Grass.png")){
-        return 1;
-    }
+    sf::RenderWindow window(sf::VideoMode(1600, 400), "My window");
     while (window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event)) {
@@ -21,11 +13,20 @@ int main() {
                 window.close();
         }
         window.clear(sf::Color::White);
-        mapa map(800,400);
-        std::vector<sf::RectangleShape> recs=map.prostokaty(dirt,grass);
+        mapa map;
+        std::vector<sf::Texture> tex;
+        std::vector<Textures> tex2;
+        Textures texture;
+        tex=texture.text();
+        tex2=texture.wczytaj();
+
+        map.load(tex2, tex);
+        map.create_map(tex2,tex);
+        std::vector<sf::RectangleShape> recs=map.prostokaty();
         for(auto &rec : recs){
             window.draw(rec);
         }
+
         window.display();
     }
 
