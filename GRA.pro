@@ -13,5 +13,5 @@ CONFIG(debug, debug|release){
 }
 
 HEADERS += \
-    Mapa.h \
-    Tile.h
+    Character.h \
+    Textures.h
