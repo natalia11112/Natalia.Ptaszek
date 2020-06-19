@@ -10,7 +10,6 @@ public:
     char znaktex;
     std::string nazwapliku;
     std::vector<sf::RectangleShape> wczytaj (){
-        sf::Context context;
 
         std::vector<Textures> textures(13);
         std::fstream file("TEX.txt");
@@ -41,6 +40,14 @@ public:
             }
             return recs;
         }
+    void draw(std::vector<sf::RectangleShape> &recs, sf::RenderWindow &window){
+        for(auto &rec : recs){
+            window.draw(rec);
+        }
+    }
+    void wcz_prz_back(){
+
+    }
 
 private: 
     sf::Texture texture;
@@ -57,8 +64,8 @@ private:
         "             0                                          ",
         "                                                        ",
         "       12223          123           0       0          4",
-        "                                                      48",
-        "                                        0          45588",
+        "                                        0             48",
+        "                                                   45588",
         "45556                         4556              45588888",
         "78889                         7889              78888889",
         "ABBBC                         ABBC              ABBBBBBC",

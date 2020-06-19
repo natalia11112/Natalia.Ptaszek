@@ -1,9 +1,10 @@
 TEMPLATE = app
-CONFIG += console c++11
+CONFIG += console c++17
 CONFIG -= app_bundle
 CONFIG -= qt
 INCLUDEPATH += "C:/SFML-2.5.1/include"
 SOURCES += \
+        Menu.cpp \
         main.cpp
 LIBS += -L"C:/SFML-2.5.1/lib"
 CONFIG(debug, debug|release){
@@ -14,4 +15,6 @@ CONFIG(debug, debug|release){
 
 HEADERS += \
     Character.h \
+    Menu.h \
+    Tablica_wynikow.h \
     Textures.h
