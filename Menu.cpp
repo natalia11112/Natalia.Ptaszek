@@ -22,17 +22,23 @@ void Menu::draw(sf::RenderWindow &window, sf::Event &event){
     if(!(event.type == sf::Event::MouseButtonReleased)){
         sf::Vector2i mouse_pos = sf::Mouse::getPosition(window);
         if((event.mouseButton.button == sf::Mouse::Left && mouse_pos.x<bounds.left+bounds.width && mouse_pos.x>bounds.left && mouse_pos.y<bounds.top+bounds.height && mouse_pos.y>bounds.top && stan == Start)){
-           stan = Game;
+           stan = Wpisz_imie;
         }
     }
-    if(stan == Start)
+    if(stan == Start || stan == Wpisz_imie)
         window.draw(nazwa);
 
 }
-void Menu::draw_prz(sf::RenderWindow &window, Tablica_wynikow &tab){
-    if(stan == Start){
+void Menu::draw_prz(sf::RenderWindow &window, Tablica_wynikow &tab, sf::Event &event){
+
+    if(stan == Start || stan == Wpisz_imie)
         window.draw(Background);
-        for(unsigned int i=0; i<icons.size()-1; i++){
+    if(stan == Wpisz_imie){
+        tab.wpisz_imie(window,event);
+        window.draw(icons[7]);
+    }
+    if(stan == Start ){
+        for(unsigned int i=0; i<icons.size()-2; i++){
             if(i==1 && music_playing ==1)
                 continue;
             if(i==2 && music_playing ==0)
@@ -51,9 +57,9 @@ void Menu::wczytajprz(){
         std::cout<<"ERROR"<<std::endl;
     }
     std::fstream file("kordikon.txt");
-    std::vector<przyciskimenu> buttons(7);
+    std::vector<przyciskimenu> buttons(8);
     if(file.is_open()){
-        for (int i=0; i<7; i++){
+        for (int i=0; i<8; i++){
             file>>buttons[i].left>>buttons[i].top>>buttons[i].scalex>>buttons[i].scaley>>buttons[i].posx>>buttons[i].posy;
 
         }
@@ -72,11 +78,14 @@ void Menu::wczytajprz(){
     Background.setTexture(background);
     Background.setScale(0.36458333,0.37037);
 }
-void Menu::drawGame(std::vector<sf::RectangleShape> &recs, sf::RenderWindow &window, Character &cha, Textures &tex, const sf::Time &elapsed){
+void Menu::drawGame(std::vector<sf::RectangleShape> &recs, sf::RenderWindow &window, Character &cha, Textures &tex, const sf::Time &elapsed, const float &deltaTime){
     tex.draw(recs,window);
     cha.drawch(window,cha);
-    cha.animate(elapsed, recs);
 
+    if(stan == Game){
+        cha.animate(elapsed, recs);
+        cha.update(deltaTime);
+    }
 }
 
 void Menu::play(){
@@ -106,7 +115,7 @@ void Menu::checkmusic(sf::Event &event, sf::RenderWindow &window){
     sf::Vector2i mouse_pos = sf::Mouse::getPosition(window);
     if(event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left
             && mouse_pos.x<bounds.left+bounds.width && mouse_pos.x>bounds.left && mouse_pos.y<bounds.top+bounds.height
-            && mouse_pos.y>bounds.top && stan == Start && paused == 0 && click == 0){
+            && mouse_pos.y>bounds.top && stan == Start  && paused == 0 && click == 0){
             music_playing = 0;
             click = 1;
     }
@@ -136,10 +145,12 @@ void Menu::checkmusic(sf::Event &event, sf::RenderWindow &window){
                 && mouse_pos.y>boundhome.top && stan == Leaderboard){
             stan = Start;
     }
-        http.setHost("http://github.com/natalia11112/Natalia.Ptaszek");
-        sf::Http::Request request;
-        http.sendRequest(request);
-        //sf::Http::Response response = http.sendRequest(request);
+        auto boundstart = icons[7].getGlobalBounds();
+        if(event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left
+                && mouse_pos.x<boundstart.left+boundstart.width && mouse_pos.x>boundstart.left && mouse_pos.y<boundstart.top+boundstart.height
+                && mouse_pos.y>boundstart.top && stan == Wpisz_imie){
+            stan = Game;
+    }
 
 }
 

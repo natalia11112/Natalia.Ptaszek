@@ -21,37 +21,51 @@ int main() {
         std::cout<<"ERROR"<<std::endl;
     }
     sf::Sprite sprite(background);
+    std::vector<sf::Sprite> backs;
+    for(int i=0; i<5; i++){
+        sprite.setPosition(700*i,0);
+        backs.emplace_back(sprite);
+    }
+     std::vector<int> returny;
+
     sf::Texture character;
     if(!character.loadFromFile("1x.png")){
         std::cout<<"ERROR";
     }
-    Character posrac(character,0,291,43,27,72,74);
+    Character posrac(character);
     Menu menu(window.getSize().x,window.getSize().y);
     menu.wczytajprz();
     menu.play();
-
+    Coin coin;
+    std::vector<sf::Sprite> coins;
+    coins=coin.drawCoins();
     while (window.isOpen()) {
 
         sf::Time elapsed = clock.restart();
+        float deltaTime = elapsed.asSeconds();
         sf::Event event;
         while (window.pollEvent(event)) {
             posrac.events(event, window);
         }
         window.clear(sf::Color::White);
+        for(auto &spr : backs){
+            window.draw(spr);
+        }
+        menu.drawGame(recs,window,posrac,texture,elapsed, deltaTime);
 
-        window.draw(sprite);
-        menu.drawGame(recs,window,posrac,texture,elapsed);
-        menu.draw_prz(window, tab);
+
+        menu.draw_prz(window, tab, event);
         menu.pause();
         menu.resume();
         posrac.setView(posrac,view);
-        //menu.draw_prz(window,tab);
         window.setView(view);
+
         menu.draw(window, event);
+        posrac.collisionWithCoins(coins,window);
+
         menu.checkmusic(event, window);
         window.display();
 
-        //std::cout<<posrac.getPosition().y<<std::endl;
     }
 
 

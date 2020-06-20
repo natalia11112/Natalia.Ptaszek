@@ -6,6 +6,7 @@
 #include <vector>
 #include "Character.h"
 #include "Textures.h"
+#include "Coin.h"
 #include "Tablica_wynikow.h"
 
 class Menu{
@@ -14,9 +15,9 @@ public:
     ~Menu();
 
     void draw(sf::RenderWindow &window, sf::Event &event);
-    void draw_prz(sf::RenderWindow &window, Tablica_wynikow &tab);
+    void draw_prz(sf::RenderWindow &window, Tablica_wynikow &tab, sf::Event &event);
     void wczytajprz();
-    void drawGame(std::vector<sf::RectangleShape> &recs, sf::RenderWindow &window, Character &cha, Textures &tex, const sf::Time &elapsed);
+    void drawGame(std::vector<sf::RectangleShape> &recs, sf::RenderWindow &window, Character &cha, Textures &tex, const sf::Time &elapsed, const float &deltaTime);
     struct przyciskimenu{
         int left;
         int top;
@@ -29,10 +30,13 @@ public:
     void pause();
     void resume();
     void checkmusic(sf::Event &event, sf::RenderWindow &window);
+    void narysujLiczbePunktow(){
+
+    }
 
 
 private:
-    enum StanMenu {Start, Game, Pause, Leaderboard} stan = Start;
+    enum StanMenu {Start, Game, Pause, Leaderboard, Wpisz_imie} stan = Start;
     int selectedindex;
     sf::Font font;
     sf::Text nazwa;
@@ -46,7 +50,9 @@ private:
     sf::Music music;
     bool paused;
     bool click = false;
-    sf::Http http;
+    std::vector<sf::RectangleShape> coins;
+    int Points;
+
 };
 
 #endif // MENU_H

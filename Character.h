@@ -3,14 +3,15 @@
 #include <iostream>
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
+#include <Coin.h>
 
 class Character : public sf::Sprite{
 public:
-    Character(sf::Texture &tex, float x, float y, float a, float b, float c, float d){
+    Character(sf::Texture &tex){
         setTexture(tex);
-        setTextureRect(sf::IntRect(a,b,c,d));
+        setTextureRect(sf::IntRect(43,27,width,height));
         setScale(0.5,0.5);
-        setPosition(x,y);
+        setPosition(0,291);
     }
     void setView(Character &character, sf::View &view){
         if(character.getPosition().x<350)
@@ -25,7 +26,6 @@ public:
             if((bounds.top+bounds.height>=boundr.top+3 && bounds.top+bounds.height<=boundr.top+4) && ((bounds.left>=boundr.left && bounds.left<=boundr.left+boundr.width)
                    || (bounds.left+bounds.width>=boundr.left && bounds.left+bounds.width<=boundr.left+boundr.width) || (bounds.left+(bounds.width/2)>=boundr.left
                    && bounds.left+(bounds.width/2)<=boundr.left+boundr.width))){
-                //std::cout<<"COLLISION";
                 onGround=true;
                 ground = boundr.top+3;
                 released = false;
@@ -35,6 +35,25 @@ public:
         onGround = false;
         return 0;
     }
+    bool collisionl (const std::vector<sf::RectangleShape> &recs){
+    auto bounds = getGlobalBounds();
+        for (auto rec : recs){
+            auto boundr = rec.getGlobalBounds();
+            if((bounds.left<boundr.left+boundr.width && bounds.left>boundr.left+boundr.width) && ((bounds.top<boundr.top+boundr.height && boundr.top>boundr.top)
+                    || (bounds.top+bounds.height<boundr.top+boundr.height && bounds.top+bounds.height>boundr.top)
+                    || (bounds.top+(bounds.height/2)<boundr.top+boundr.height && bounds.top+(bounds.height/2)>boundr.top)))
+                return 1;
+        }
+        return 0;
+    }
+    bool collisionr (const std::vector<sf::RectangleShape> &recs){
+    auto bounds = getGlobalBounds();
+    for (auto rec : recs){
+        auto boundr = rec.getGlobalBounds();
+    }
+
+    }
+
     void events(sf::Event &event, sf::RenderWindow &window){
         if (event.type == sf::Event::Closed)
             window.close();
@@ -45,8 +64,8 @@ public:
     void animate(const sf::Time &elapsed, const std::vector<sf::RectangleShape> &recs){
         auto bounds = getGlobalBounds();
         collisiond(recs);
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-                    if(bounds.left>bounds_left)
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) ) {
+                    if(bounds.left>bounds_left && collisionl(recs)==0)
                         move(-std::abs(velocity_x) * elapsed.asSeconds(), 0);
                 }
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) ) {
@@ -62,7 +81,6 @@ public:
                     if(collisiond(recs)==1){
                         released=false;
                         move(0,-(getPosition().y+bounds.height-ground));
-                    std::cout<<"YASS";
                     }
                     else
                         move(0,velocity_y*elapsed.asSeconds());
@@ -73,15 +91,52 @@ public:
     void drawch(sf::RenderWindow &window, Character cha){
         window.draw(cha);
     }
+    void update(const float &deltaTime){
+        totalTime += deltaTime;
+        if(totalTime >= switchTime){
+            totalTime -= switchTime;
+            currentImage++;
+            if(currentImage >= imageCount){
+                currentImage = 0;
+                roznica = 0;
+            }
+
+            if((currentImage == 2 || currentImage == 5 || currentImage == 7 || currentImage == 10))
+                roznica++;
+        }
+
+
+            setTextureRect(sf::IntRect(43+currentImage*width+currentImage*13+roznica,27,width,height));
+    }
+    void collisionWithCoins(std::vector<sf::Sprite> &coins, sf::RenderWindow &window){
+        auto bounds = getGlobalBounds();
+        for(unsigned int i=0; i<coins.size(); i++){
+            auto boundr = coins[i].getGlobalBounds();
+            if(bounds.intersects(boundr))
+                usun[i]=1;
+            if(usun[i]==0)
+                window.draw(coins[i]);
+        }
+    }
+
 
 private:
     std::string name;
-    float bounds_left = 0, bounds_right = 700;
+    float bounds_left = 0;
     float velocity_x = 150;
     float velocity_y = 430;
     bool onGround = true;
     bool released =false;
     float ground;
+    float switchTime = 0.2f;
+    int imageCount = 11;
+    int currentImage = 0;
+    float totalTime = 0.0f;
+    float height = 75;
+    float width = 73;
+    int roznica = 0;
+    std::vector<int> usun = {0,0,0,0,0,0,0,0,0,0,0,0,0};
+
 
 };
 
