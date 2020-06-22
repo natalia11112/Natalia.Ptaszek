@@ -44,7 +44,7 @@ int main() {
         sf::Time elapsed = clock.restart();
         float deltaTime = elapsed.asSeconds();
         sf::Event event;
-        while (window.pollEvent(event)) {
+        while (window.pollEvent(event)){
             posrac.events(event, window);
         }
         window.clear(sf::Color::White);

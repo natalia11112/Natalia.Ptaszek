@@ -23,8 +23,8 @@ public:
         auto bounds = getGlobalBounds();
         for (auto rec : recs){
             auto boundr = rec.getGlobalBounds();
-            if((bounds.top+bounds.height>=boundr.top+3 && bounds.top+bounds.height<=boundr.top+4) && ((bounds.left>=boundr.left && bounds.left<=boundr.left+boundr.width)
-                   || (bounds.left+bounds.width>=boundr.left && bounds.left+bounds.width<=boundr.left+boundr.width) || (bounds.left+(bounds.width/2)>=boundr.left
+            if((bounds.top+bounds.height>=boundr.top+3 && bounds.top+bounds.height<=boundr.top+4) && ((bounds.left+17>=boundr.left && bounds.left+17<=boundr.left+boundr.width)
+                   || (bounds.left+bounds.width-17>=boundr.left && bounds.left+bounds.width-17<=boundr.left+boundr.width) || (bounds.left+(bounds.width/2)>=boundr.left
                    && bounds.left+(bounds.width/2)<=boundr.left+boundr.width))){
                 onGround=true;
                 ground = boundr.top+3;
@@ -35,23 +35,42 @@ public:
         onGround = false;
         return 0;
     }
+    bool collisionu (const std::vector<sf::RectangleShape> &recs){
+        auto bounds = getGlobalBounds();
+        for (auto rec : recs){
+            auto boundr = rec.getGlobalBounds();
+            if((bounds.top<=boundr.top+boundr.height && bounds.top>boundr.top) && ((bounds.left+17>=boundr.left && bounds.left+17<=boundr.left+boundr.width)
+                   || (bounds.left+bounds.width-17>=boundr.left && bounds.left+bounds.width-17<=boundr.left+boundr.width) || (bounds.left+(bounds.width/2)>=boundr.left
+                   && bounds.left+(bounds.width/2)<=boundr.left+boundr.width))){
+                released = 1;
+                return 1;
+            }
+        }
+        return 0;
+    }
     bool collisionl (const std::vector<sf::RectangleShape> &recs){
     auto bounds = getGlobalBounds();
         for (auto rec : recs){
             auto boundr = rec.getGlobalBounds();
-            if((bounds.left<boundr.left+boundr.width && bounds.left>boundr.left+boundr.width) && ((bounds.top<boundr.top+boundr.height && boundr.top>boundr.top)
-                    || (bounds.top+bounds.height<boundr.top+boundr.height && bounds.top+bounds.height>boundr.top)
-                    || (bounds.top+(bounds.height/2)<boundr.top+boundr.height && bounds.top+(bounds.height/2)>boundr.top)))
+            if((bounds.left<=boundr.left+boundr.width && bounds.left>boundr.left) && ((bounds.top<boundr.top+boundr.height && boundr.top>boundr.top)
+                    || (bounds.top+bounds.height<boundr.top+boundr.height && bounds.top+bounds.height>boundr.top+4)
+                    || (bounds.top+(bounds.height/2)<boundr.top+boundr.height && bounds.top+(bounds.height/2)>boundr.top))){
                 return 1;
+            }
         }
         return 0;
     }
     bool collisionr (const std::vector<sf::RectangleShape> &recs){
-    auto bounds = getGlobalBounds();
-    for (auto rec : recs){
-        auto boundr = rec.getGlobalBounds();
-    }
-
+        auto bounds = getGlobalBounds();
+            for (auto rec : recs){
+                auto boundr = rec.getGlobalBounds();
+                if((bounds.left+bounds.height>=boundr.left && bounds.left+bounds.height<boundr.left+boundr.height) && ((bounds.top<boundr.top+boundr.height && boundr.top>boundr.top)
+                        || (bounds.top+bounds.height<boundr.top+boundr.height && bounds.top+bounds.height>boundr.top+4)
+                        || (bounds.top+(bounds.height/2)<boundr.top+boundr.height && bounds.top+(bounds.height/2)>boundr.top))){
+                    return 1;
+                }
+            }
+            return 0;
     }
 
     void events(sf::Event &event, sf::RenderWindow &window){
@@ -64,19 +83,24 @@ public:
     void animate(const sf::Time &elapsed, const std::vector<sf::RectangleShape> &recs){
         auto bounds = getGlobalBounds();
         collisiond(recs);
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) ) {
+        collisionl(recs);
+        collisionr(recs);
+        collisionu(recs);
+        //std::cout<<collisionl(recs)<<" "<<collisiond(recs)<<" "<<collisionr(recs)<<" "<<collisionu(recs)<<std::endl;
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && collisionl(recs)==0) {
                     if(bounds.left>bounds_left && collisionl(recs)==0)
                         move(-std::abs(velocity_x) * elapsed.asSeconds(), 0);
                 }
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) ) {
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && collisionr(recs)==0 ) {
                         move(std::abs(velocity_x) * elapsed.asSeconds(), 0);
                 }
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && released == false) {
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && released == false && collisionu(recs)==0) {
                     move(0,-velocity_y*elapsed.asSeconds());
                     onGround = false;
                     if(ground-getPosition().y+bounds.height>250)
                         released = true;
                 }
+                std::cout<<onGround<<" "<<released<<" "<<std::endl;
                 if(onGround == false && released == true && collisiond(recs)==0){
                     if(collisiond(recs)==1){
                         released=false;
