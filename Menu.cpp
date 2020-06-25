@@ -12,7 +12,6 @@ Menu::Menu(const float &wid, const float &hei){
     nazwa.setString("Czerwony biegacz");
     nazwa.setPosition(sf::Vector2f(width/2-221.5,height/2-150));
     nazwa.setCharacterSize(54);
-
 }
 Menu::~Menu(){
 
@@ -78,11 +77,12 @@ void Menu::wczytajprz(){
     Background.setTexture(background);
     Background.setScale(0.36458333,0.37037);
 }
-void Menu::drawGame(std::vector<sf::RectangleShape> &recs, sf::RenderWindow &window, Character &cha, Textures &tex, const sf::Time &elapsed, const float &deltaTime){
+void Menu::drawGame(std::vector<sf::RectangleShape> &recs, sf::RenderWindow &window, Character &cha, Textures &tex, const sf::Time &elapsed, const float &deltaTime, Enemies &enemy){
     tex.draw(recs,window);
     cha.drawch(window,cha);
 
     if(stan == Game){
+        enemy.drawenemy(window, cha, elapsed);
         cha.animate(elapsed, recs);
         cha.update(deltaTime);
     }

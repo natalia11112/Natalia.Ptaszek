@@ -16,6 +16,7 @@ CONFIG(debug, debug|release){
 HEADERS += \
     Character.h \
     Coin.h \
+    Enemies.h \
     Menu.h \
     Tablica_wynikow.h \
     Textures.h

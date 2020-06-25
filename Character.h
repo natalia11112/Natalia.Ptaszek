@@ -23,8 +23,8 @@ public:
         auto bounds = getGlobalBounds();
         for (auto rec : recs){
             auto boundr = rec.getGlobalBounds();
-            if((bounds.top+bounds.height>=boundr.top+3 && bounds.top+bounds.height<=boundr.top+4) && ((bounds.left+17>=boundr.left && bounds.left+17<=boundr.left+boundr.width)
-                   || (bounds.left+bounds.width-17>=boundr.left && bounds.left+bounds.width-17<=boundr.left+boundr.width) || (bounds.left+(bounds.width/2)>=boundr.left
+            if((bounds.top+bounds.height>=boundr.top+3 && bounds.top+bounds.height<=boundr.top+4.5) && ((bounds.left+10>=boundr.left && bounds.left+10<=boundr.left+boundr.width)
+                   || (bounds.left+bounds.width-10>=boundr.left && bounds.left+bounds.width-17<=boundr.left+boundr.width) || (bounds.left+(bounds.width/2)>=boundr.left
                    && bounds.left+(bounds.width/2)<=boundr.left+boundr.width))){
                 onGround=true;
                 ground = boundr.top+3;
@@ -39,8 +39,8 @@ public:
         auto bounds = getGlobalBounds();
         for (auto rec : recs){
             auto boundr = rec.getGlobalBounds();
-            if((bounds.top<=boundr.top+boundr.height && bounds.top>boundr.top) && ((bounds.left+17>=boundr.left && bounds.left+17<=boundr.left+boundr.width)
-                   || (bounds.left+bounds.width-17>=boundr.left && bounds.left+bounds.width-17<=boundr.left+boundr.width) || (bounds.left+(bounds.width/2)>=boundr.left
+            if((bounds.top<=boundr.top+boundr.height && bounds.top>boundr.top) && ((bounds.left+10>=boundr.left && bounds.left+10<=boundr.left+boundr.width)
+                   || (bounds.left+bounds.width-10>=boundr.left && bounds.left+bounds.width-17<=boundr.left+boundr.width) || (bounds.left+(bounds.width/2)>=boundr.left
                    && bounds.left+(bounds.width/2)<=boundr.left+boundr.width))){
                 released = 1;
                 return 1;
@@ -86,7 +86,6 @@ public:
         collisionl(recs);
         collisionr(recs);
         collisionu(recs);
-        //std::cout<<collisionl(recs)<<" "<<collisiond(recs)<<" "<<collisionr(recs)<<" "<<collisionu(recs)<<std::endl;
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && collisionl(recs)==0) {
                     if(bounds.left>bounds_left && collisionl(recs)==0)
                         move(-std::abs(velocity_x) * elapsed.asSeconds(), 0);
@@ -100,7 +99,6 @@ public:
                     if(ground-getPosition().y+bounds.height>250)
                         released = true;
                 }
-                std::cout<<onGround<<" "<<released<<" "<<std::endl;
                 if(onGround == false && released == true && collisiond(recs)==0){
                     if(collisiond(recs)==1){
                         released=false;
@@ -141,6 +139,10 @@ public:
             if(usun[i]==0)
                 window.draw(coins[i]);
         }
+    }
+    sf::Vector2f zwrocPozycje(){
+        sf::Vector2f pozycja(getPosition().x, getPosition().y);
+        return pozycja;
     }
 
 

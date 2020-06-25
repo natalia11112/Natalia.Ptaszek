@@ -6,6 +6,7 @@
 #include <Character.h>
 #include <vector>
 #include "Menu.h"
+#include "Enemies.h"
 #include "Tablica_wynikow.h"
 
 int main() {
@@ -39,8 +40,9 @@ int main() {
     Coin coin;
     std::vector<sf::Sprite> coins;
     coins=coin.drawCoins();
+    Enemies enemy;
+    enemy.enemies();
     while (window.isOpen()) {
-
         sf::Time elapsed = clock.restart();
         float deltaTime = elapsed.asSeconds();
         sf::Event event;
@@ -51,15 +53,12 @@ int main() {
         for(auto &spr : backs){
             window.draw(spr);
         }
-        menu.drawGame(recs,window,posrac,texture,elapsed, deltaTime);
-
-
+        menu.drawGame(recs,window,posrac,texture,elapsed, deltaTime, enemy);
         menu.draw_prz(window, tab, event);
         menu.pause();
         menu.resume();
         posrac.setView(posrac,view);
         window.setView(view);
-
         menu.draw(window, event);
         posrac.collisionWithCoins(coins,window);
 

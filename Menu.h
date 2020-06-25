@@ -8,6 +8,7 @@
 #include "Textures.h"
 #include "Coin.h"
 #include "Tablica_wynikow.h"
+#include "Enemies.h"
 
 class Menu{
 public:
@@ -17,7 +18,7 @@ public:
     void draw(sf::RenderWindow &window, sf::Event &event);
     void draw_prz(sf::RenderWindow &window, Tablica_wynikow &tab, sf::Event &event);
     void wczytajprz();
-    void drawGame(std::vector<sf::RectangleShape> &recs, sf::RenderWindow &window, Character &cha, Textures &tex, const sf::Time &elapsed, const float &deltaTime);
+    void drawGame(std::vector<sf::RectangleShape> &recs, sf::RenderWindow &window, Character &cha, Textures &tex, const sf::Time &elapsed, const float &deltaTime, Enemies &enemy);
     struct przyciskimenu{
         int left;
         int top;
