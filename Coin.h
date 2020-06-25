@@ -2,6 +2,8 @@
 #define COIN_H
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include <numeric>
+#include "Character.h"
 
 class Coin : public sf::Sprite{
 public:
@@ -21,6 +23,24 @@ public:
             }
         }
         return Coins;
+    }
+    void collisionWithCharacter(sf::RenderWindow &window, Character &cha){
+        auto bounds = cha.getGlobalBounds();
+        for(unsigned int i=0; i<Coins.size(); i++){
+            auto boundr = Coins[i].getGlobalBounds();
+            if(bounds.intersects(boundr)){
+                usun[i]=1;
+            }
+            if(usun[i]==0)
+                window.draw(Coins[i]);
+        }
+    }
+    void wyzeruj(){
+        usun = {0,0,0,0,0,0,0,0,0,0,0,0,0};
+    }
+    int punkty(){
+        points = std::accumulate(usun.begin(), usun.end(), 0);
+        return points;
     }
 private:
     std::vector<std::string> pozycje ={
@@ -46,7 +66,8 @@ private:
     //std::vector<int> draw = {0,0,0,0,0,0,0,0,0,0,0,0,0};
     sf::Sprite oneCoin;
     int m_height=16,m_width=108;
-
+    std::vector<int> usun = {0,0,0,0,0,0,0,0,0,0,0,0,0};
+    int points = 0;
 };
 
 #endif // COIN_H

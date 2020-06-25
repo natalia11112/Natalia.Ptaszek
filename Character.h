@@ -3,7 +3,6 @@
 #include <iostream>
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
-#include <Coin.h>
 
 class Character : public sf::Sprite{
 public:
@@ -16,7 +15,7 @@ public:
     void setView(Character &character, sf::View &view){
         if(character.getPosition().x<350)
             view.setCenter(350,200);
-        else if(character.getPosition().x>=400)
+        else if(character.getPosition().x>=350)
             view.setCenter(character.getPosition().x, 200);
     }
     bool collisiond (const std::vector<sf::RectangleShape> &recs){
@@ -130,19 +129,27 @@ public:
 
             setTextureRect(sf::IntRect(43+currentImage*width+currentImage*13+roznica,27,width,height));
     }
-    void collisionWithCoins(std::vector<sf::Sprite> &coins, sf::RenderWindow &window){
-        auto bounds = getGlobalBounds();
-        for(unsigned int i=0; i<coins.size(); i++){
-            auto boundr = coins[i].getGlobalBounds();
-            if(bounds.intersects(boundr))
-                usun[i]=1;
-            if(usun[i]==0)
-                window.draw(coins[i]);
-        }
-    }
+
     sf::Vector2f zwrocPozycje(){
         sf::Vector2f pozycja(getPosition().x, getPosition().y);
         return pozycja;
+    }
+    bool Over(){
+        auto bounds = getGlobalBounds();
+        if(bounds.top+bounds.height>=400)
+            return 1;
+        else
+            return 0;
+    }
+    float getX(){
+        return getPosition().x;
+    }
+    void wyzeruj(){
+        setPosition(0,291);
+        onGround = true;
+        released = false;
+        currentImage = 0;
+        roznica = 0;
     }
 
 
@@ -161,7 +168,8 @@ private:
     float height = 75;
     float width = 73;
     int roznica = 0;
-    std::vector<int> usun = {0,0,0,0,0,0,0,0,0,0,0,0,0};
+
+
 
 
 };

@@ -11,6 +11,7 @@
 
 int main() {
     sf::RenderWindow window(sf::VideoMode(700, 400), "My window");
+    std::ofstream zapis("Najlepsze Wyniki.txt", std::ios::app);
     std::vector<sf::RectangleShape> recs;
     Textures texture;
     sf::View view(sf::FloatRect(0,0,700,400));
@@ -42,6 +43,7 @@ int main() {
     coins=coin.drawCoins();
     Enemies enemy;
     enemy.enemies();
+    tab.wynikiNaText();
     while (window.isOpen()) {
         sf::Time elapsed = clock.restart();
         float deltaTime = elapsed.asSeconds();
@@ -53,19 +55,25 @@ int main() {
         for(auto &spr : backs){
             window.draw(spr);
         }
-        menu.drawGame(recs,window,posrac,texture,elapsed, deltaTime, enemy);
+        menu.drawGame(recs,tab,window,posrac,texture,elapsed, deltaTime, enemy, coin);
         menu.draw_prz(window, tab, event);
+
         menu.pause();
         menu.resume();
         posrac.setView(posrac,view);
         window.setView(view);
-        menu.draw(window, event);
-        posrac.collisionWithCoins(coins,window);
-
+        menu.draw(window, event, posrac);
         menu.checkmusic(event, window);
+        menu.wyzeruj(posrac, coin, enemy, tab);
         window.display();
 
     }
+    std::vector<int> punkty = menu.zwrocPunkty();
+    std::vector<std::string> imiona = menu.zwrocImiona();
+    for(unsigned int i=0; i<punkty.size(); i++){
+        zapis<<imiona[i]<<" "<<punkty[i]<<std::endl;
+    }
+    zapis.close();
 
 
     return 0;

@@ -62,6 +62,6 @@ private:
     std::vector<std::string> mapka;
     sf::RectangleShape rectangle;
     std::vector<sf::RectangleShape> recs;
-    int m_height=16,m_width=108;
+    int m_height=16,m_width=131;
 };
 #endif // TILE_H
