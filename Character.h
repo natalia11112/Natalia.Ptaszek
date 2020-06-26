@@ -15,14 +15,16 @@ public:
     void setView(Character &character, sf::View &view){
         if(character.getPosition().x<350)
             view.setCenter(350,200);
-        else if(character.getPosition().x>=350)
+        else if(character.getPosition().x>=350 && character.getPosition().x<3050)
             view.setCenter(character.getPosition().x, 200);
+        else if(character.getPosition().x>=3050)
+            view.setCenter(3050,200);
     }
     bool collisiond (const std::vector<sf::RectangleShape> &recs){
         auto bounds = getGlobalBounds();
         for (auto rec : recs){
             auto boundr = rec.getGlobalBounds();
-            if((bounds.top+bounds.height>=boundr.top+3 && bounds.top+bounds.height<=boundr.top+4.5) && ((bounds.left+10>=boundr.left && bounds.left+10<=boundr.left+boundr.width)
+            if((bounds.top+bounds.height>=boundr.top+3 && bounds.top+bounds.height<=boundr.top+6) && ((bounds.left+10>=boundr.left && bounds.left+10<=boundr.left+boundr.width)
                    || (bounds.left+bounds.width-10>=boundr.left && bounds.left+bounds.width-17<=boundr.left+boundr.width) || (bounds.left+(bounds.width/2)>=boundr.left
                    && bounds.left+(bounds.width/2)<=boundr.left+boundr.width))){
                 onGround=true;
@@ -51,9 +53,9 @@ public:
     auto bounds = getGlobalBounds();
         for (auto rec : recs){
             auto boundr = rec.getGlobalBounds();
-            if((bounds.left<=boundr.left+boundr.width && bounds.left>boundr.left) && ((bounds.top<boundr.top+boundr.height && boundr.top>boundr.top)
-                    || (bounds.top+bounds.height<boundr.top+boundr.height && bounds.top+bounds.height>boundr.top+4)
-                    || (bounds.top+(bounds.height/2)<boundr.top+boundr.height && bounds.top+(bounds.height/2)>boundr.top))){
+            if((bounds.left<=boundr.left+boundr.width && bounds.left>boundr.left) && ((bounds.top<boundr.top+boundr.height && bounds.top>boundr.top+6)
+                    || (bounds.top+bounds.height<boundr.top+boundr.height && bounds.top+bounds.height>boundr.top+6)
+                    || (bounds.top+(bounds.height/2)<boundr.top+boundr.height && bounds.top+(bounds.height/2)>boundr.top+6))){
                 return 1;
             }
         }
@@ -63,9 +65,9 @@ public:
         auto bounds = getGlobalBounds();
             for (auto rec : recs){
                 auto boundr = rec.getGlobalBounds();
-                if((bounds.left+bounds.height>=boundr.left && bounds.left+bounds.height<boundr.left+boundr.height) && ((bounds.top<boundr.top+boundr.height && boundr.top>boundr.top)
-                        || (bounds.top+bounds.height<boundr.top+boundr.height && bounds.top+bounds.height>boundr.top+4)
-                        || (bounds.top+(bounds.height/2)<boundr.top+boundr.height && bounds.top+(bounds.height/2)>boundr.top))){
+                if((bounds.left+bounds.height>=boundr.left && bounds.left+bounds.height<boundr.left+boundr.height) && ((bounds.top<boundr.top+boundr.height && bounds.top>boundr.top+6)
+                        || (bounds.top+bounds.height<boundr.top+boundr.height && bounds.top+bounds.height>boundr.top+6)
+                        || (bounds.top+(bounds.height/2)<boundr.top+boundr.height && bounds.top+(bounds.height/2)>boundr.top+6))){
                     return 1;
                 }
             }
@@ -86,10 +88,11 @@ public:
         collisionr(recs);
         collisionu(recs);
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && collisionl(recs)==0) {
-                    if(bounds.left>bounds_left && collisionl(recs)==0)
+                    if(bounds.left+1>bounds_left)
                         move(-std::abs(velocity_x) * elapsed.asSeconds(), 0);
                 }
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && collisionr(recs)==0 ) {
+                    if(bounds.left+bounds.width<bounds_right)
                         move(std::abs(velocity_x) * elapsed.asSeconds(), 0);
                 }
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && released == false && collisionu(recs)==0) {
@@ -141,9 +144,6 @@ public:
         else
             return 0;
     }
-    float getX(){
-        return getPosition().x;
-    }
     void wyzeruj(){
         setPosition(0,291);
         onGround = true;
@@ -151,11 +151,9 @@ public:
         currentImage = 0;
         roznica = 0;
     }
-
-
 private:
     std::string name;
-    float bounds_left = 0;
+    float bounds_left = 0, bounds_right = 3400;
     float velocity_x = 150;
     float velocity_y = 430;
     bool onGround = true;
@@ -168,9 +166,6 @@ private:
     float height = 75;
     float width = 73;
     int roznica = 0;
-
-
-
 
 };
 

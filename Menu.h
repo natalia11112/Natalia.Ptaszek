@@ -9,6 +9,8 @@
 #include "Coin.h"
 #include "Tablica_wynikow.h"
 #include "Enemies.h"
+#include "Spikes.h"
+#include "Chest.h"
 
 class Menu{
 public:
@@ -18,8 +20,8 @@ public:
     void draw(sf::RenderWindow &window, sf::Event &event, Character &cha);
     void draw_prz(sf::RenderWindow &window, Tablica_wynikow &tab, sf::Event &event);
     void wczytajprz();
-    void drawGame(std::vector<sf::RectangleShape> &recs, Tablica_wynikow &tab, sf::RenderWindow &window, Character &cha, Textures &tex,
-    const sf::Time &elapsed, const float &deltaTime, Enemies &enemy, Coin &coin);
+    void drawGame(std::vector<sf::RectangleShape> &recs1, std::vector<sf::RectangleShape> &recs2,std::vector<sf::RectangleShape> &recs3, Tablica_wynikow &tab,
+    sf::RenderWindow &window, Character &cha, Textures &tex, const sf::Time &elapsed, const float &deltaTime, Enemies &enemy, Coin &coin, Spikes &spike, Chest &chest);
     struct przyciskimenu{
         int left;
         int top;
@@ -32,12 +34,12 @@ public:
     void play ();
     void pause();
     void resume();
-    void checkmusic(sf::Event &event, sf::RenderWindow &window);
+    void checkmusic(sf::Event &event, sf::RenderWindow &window, Tablica_wynikow &tab);
     std::vector<std::string> zwrocImiona();
     std::vector<int> zwrocPunkty();
 
 private:
-    enum StanMenu {Start, Leaderboard, Wpisz_imie, Game, Pause, GameOver} stan = Start;
+    enum StanMenu {Start, Leaderboard, Wpisz_imie, Game1, Game2, Game3, GameOver, Wygrana} stan = Start;
     int selectedindex;
     sf::Font font;
     sf::Text nazwa;
@@ -64,6 +66,11 @@ private:
     std::vector<sf::Text> Lead1;
     std::vector<sf::Text> Lead2;
     std::vector<sf::Text> Lead3;
+    std::string a;
+    std::vector<sf::RectangleShape> recs1;
+    std::vector<sf::RectangleShape> recs2;
+    sf::Text koniec;
+
 
 };
 

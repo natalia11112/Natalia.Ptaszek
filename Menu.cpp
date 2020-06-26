@@ -21,6 +21,11 @@ Menu::Menu(const float &wid, const float &hei){
     Points.setFillColor(sf::Color::Black);
     Points.setString(punkty);
     Points.setCharacterSize(25);
+    koniec.setFont(font);
+    koniec.setFillColor(sf::Color::Red);
+    koniec.setString("Wygrana");
+    koniec.setPosition(width/2-100,height/2-150);
+    koniec.setCharacterSize(54);
 }
 Menu::~Menu(){
 
@@ -102,12 +107,16 @@ void Menu::wczytajprz(){
     Background.setTexture(background);
     Background.setScale(0.36458333,0.37037);
 }
-void Menu::drawGame(std::vector<sf::RectangleShape> &recs,Tablica_wynikow &tab, sf::RenderWindow &window, Character &cha, Textures &tex, const sf::Time &elapsed, const float &deltaTime, Enemies &enemy, Coin &coin){
+void Menu::drawGame(std::vector<sf::RectangleShape> &recs1, std::vector<sf::RectangleShape> &recs2,std::vector<sf::RectangleShape> &recs3, Tablica_wynikow &tab, sf::RenderWindow &window,
+    Character &cha, Textures &tex, const sf::Time &elapsed, const float &deltaTime, Enemies &enemy, Coin &coin, Spikes &spike, Chest &chest){
     points = coin.punkty();
     punkty = std::to_string(points);
     Points.setString(punkty);
-    if(cha.getPosition().x>=350){
+    if(cha.getPosition().x>=350 && cha.getPosition().x<3050){
         Points.setPosition(cha.getPosition().x-340,Points.getPosition().y);
+    }
+    if(cha.getPosition().x>=3050){
+        Points.setPosition(2710,Points.getPosition().y);
     }
     if(stan == GameOver){
         view.setSize(700,400);
@@ -119,19 +128,85 @@ void Menu::drawGame(std::vector<sf::RectangleShape> &recs,Tablica_wynikow &tab, 
             saved = 1;
         }
         nowaGra =1;
+        chest.reset();
+        chest.clear();
     }
-    if(enemy.collisionWithPosrac(cha)==1)
-        stan = GameOver;
-    if(stan == Game){
+    if(stan == Game1){
         saved = 0;
-        tex.draw(recs,window);
+        tex.drawTex1(window);
+        chest.drawChest(window, chest, cha, deltaTime);
         cha.drawch(window,cha);
         window.draw(Points);
-        enemy.drawenemy(window, cha);
-        coin.collisionWithCharacter(window, cha);
-        enemy.falldown(cha,elapsed);
-        cha.animate(elapsed, recs);
+        spike.drawspike1(window,cha);
+        enemy.drawenemy1(window, cha);
+        coin.collisionWithCharacter1(window, cha);
+        enemy.falldown1(cha,elapsed);
+        cha.animate(elapsed, recs1);
         cha.update(deltaTime);
+        chest.ifopened(0);
+        if(enemy.collisionWithPosrac1(cha)==1)
+            stan = GameOver;
+        if(spike.collision1(cha)==1)
+            stan = GameOver;
+        if(chest.ifopened(0)==1){
+            coin.ifOpened(chest);
+            stan = Game2;
+            cha.wyzeruj();
+            Points.setPosition(10,10);
+            chest.reset();
+        }
+    }
+    if(stan == Game2){
+        tex.drawTex2(window);
+        chest.drawChest(window, chest, cha, deltaTime);
+        cha.drawch(window,cha);
+        window.draw(Points);
+        spike.drawspike2(window,cha);
+        enemy.drawenemy2(window, cha);
+        coin.collisionWithCharacter2(window, cha);
+        enemy.falldown2(cha,elapsed);
+        cha.animate(elapsed, recs2);
+        cha.update(deltaTime);
+        chest.ifopened(1);
+        if(enemy.collisionWithPosrac2(cha)==1)
+            stan = GameOver;
+        if(spike.collision2(cha)==1)
+            stan = GameOver;
+        if(chest.ifopened(1)==1){
+            coin.ifOpened(chest);
+            stan = Game3;
+            cha.wyzeruj();
+            Points.setPosition(10,10);
+            chest.reset();
+        }
+    }
+    if(stan == Game3){
+        tex.drawTex3(window);
+        chest.drawChest(window, chest, cha, deltaTime);
+        cha.drawch(window,cha);
+        window.draw(Points);
+        spike.drawspike3(window,cha);
+        enemy.drawenemy3(window, cha);
+        coin.collisionWithCharacter3(window, cha);
+        enemy.falldown3(cha,elapsed);
+        cha.animate(elapsed, recs3);
+        cha.update(deltaTime);
+        chest.ifopened(2);
+        if(enemy.collisionWithPosrac3(cha)==1)
+            stan = GameOver;
+        if(spike.collision3(cha)==1)
+            stan = GameOver;
+        if(chest.ifopened(2)==1){
+            coin.ifOpened(chest);
+            stan = Wygrana;
+            cha.wyzeruj();
+            Points.setPosition(10,10);
+            chest.reset();
+        }
+    }
+    if(stan == Wygrana){
+        window.draw(koniec);
+        window.draw(icons[6]);
     }
 }
 
@@ -153,7 +228,8 @@ void Menu::pause(){
 
 }
 
-void Menu::checkmusic(sf::Event &event, sf::RenderWindow &window){
+void Menu::checkmusic(sf::Event &event, sf::RenderWindow &window, Tablica_wynikow &tab){
+    a = tab.returnImie();
     auto bounds = icons[0].getGlobalBounds();
     if(music_playing == 1)
         bounds = icons[1].getGlobalBounds();
@@ -189,15 +265,15 @@ void Menu::checkmusic(sf::Event &event, sf::RenderWindow &window){
     auto boundhome = icons[6].getGlobalBounds();
     if(event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left
     && mouse_pos.x<boundhome.left+boundhome.width && mouse_pos.x>boundhome.left && mouse_pos.y<boundhome.top+boundhome.height
-    && mouse_pos.y>boundhome.top && (stan == Leaderboard || stan == GameOver)){
+    && mouse_pos.y>boundhome.top && (stan == Leaderboard || stan == GameOver || stan == Wygrana)){
         stan = Start;
     }
     auto boundstart = icons[7].getGlobalBounds();
     if(event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left
     && mouse_pos.x<boundstart.left+boundstart.width && mouse_pos.x>boundstart.left && mouse_pos.y<boundstart.top+boundstart.height
-    && mouse_pos.y>boundstart.top && stan == Wpisz_imie){
+    && mouse_pos.y>boundstart.top && stan == Wpisz_imie && a.size()>0){
         Points.setPosition(10,10);
-        stan = Game;
+        stan = Game1;
 
     }
     auto boundnew =  icons[8].getGlobalBounds();
@@ -218,8 +294,12 @@ void Menu::resume(){
 void Menu::wyzeruj(Character &cha, Coin &coin, Enemies &enemy, Tablica_wynikow &tab){
     if(nowaGra == 1){
         cha.wyzeruj();
-        coin.wyzeruj();
-        enemy.wyzeruj();
+        coin.wyzeruj1();
+        coin.wyzeruj2();
+        coin.wyzeruj3();
+        enemy.wyzeruj1();
+        enemy.wyzeruj2();
+        enemy.wyzeruj3();
         tab.wyzeruj();
     }
 }
