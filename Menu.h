@@ -8,20 +8,18 @@
 #include "Textures.h"
 #include "Coin.h"
 #include "Tablica_wynikow.h"
-#include "Enemies.h"
 #include "Spikes.h"
 #include "Chest.h"
+#include "Enemies.h"
 
 class Menu{
 public:
     Menu(const float &wid, const float &hei);
     ~Menu();
-
-    void draw(sf::RenderWindow &window, sf::Event &event, Character &cha);
-    void draw_prz(sf::RenderWindow &window, Tablica_wynikow &tab, sf::Event &event);
     void wczytajprz();
     void drawGame(std::vector<sf::RectangleShape> &recs1, std::vector<sf::RectangleShape> &recs2,std::vector<sf::RectangleShape> &recs3, Tablica_wynikow &tab,
-    sf::RenderWindow &window, Character &cha, Textures &tex, const sf::Time &elapsed, const float &deltaTime, Enemies &enemy, Coin &coin, Spikes &spike, Chest &chest);
+    sf::RenderWindow &window, Character &cha, Textures &tex, const sf::Time &elapsed, const float &deltaTime, Enemies &enemy, Coin &coin, Spikes &spike,
+    Chest &chest, sf::Event &event);
     struct przyciskimenu{
         int left;
         int top;
@@ -34,7 +32,7 @@ public:
     void play ();
     void pause();
     void resume();
-    void checkmusic(sf::Event &event, sf::RenderWindow &window, Tablica_wynikow &tab);
+    void checkbuttons(sf::Event &event, sf::RenderWindow &window, Tablica_wynikow &tab);
     std::vector<std::string> zwrocImiona();
     std::vector<int> zwrocPunkty();
 
@@ -58,6 +56,7 @@ private:
     bool nowaGra = false;
     sf::View view;
     sf::Text Points;
+    sf::Text Lives;
     int points = 0;
     std::string punkty;
     std::vector<int> PunktyPrzej;
@@ -70,8 +69,11 @@ private:
     std::vector<sf::RectangleShape> recs1;
     std::vector<sf::RectangleShape> recs2;
     sf::Text koniec;
-
-
+    bool collideds = false;
+    bool collidede = false;
+    sf::Sprite sprite;
+    sf::Texture background2;
+    std::vector<sf::Sprite> backs;
 };
 
 #endif // MENU_H

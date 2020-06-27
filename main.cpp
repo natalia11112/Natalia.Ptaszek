@@ -11,7 +11,7 @@
 
 int main() {
     sf::RenderWindow window(sf::VideoMode(700, 400), "My window");
-    std::ofstream zapis("Najlepsze Wyniki.txt", std::ios::app);
+    std::ofstream zapis("Resources/Pliki_txt/Najlepsze Wyniki.txt", std::ios::app);
     Textures texture;
     texture.utworzMape();
     std::vector<sf::RectangleShape> recs1 = texture.wczytaj1();
@@ -20,23 +20,8 @@ int main() {
     sf::View view(sf::FloatRect(0,0,700,400));
     sf::Clock clock;
     Tablica_wynikow tab;
-    sf::Texture background;
-    if(!background.loadFromFile("Background.png")){
-        std::cout<<"ERROR"<<std::endl;
-    }
-    sf::Sprite sprite(background);
-    std::vector<sf::Sprite> backs;
-    for(int i=0; i<5; i++){
-        sprite.setPosition(700*i,0);
-        backs.emplace_back(sprite);
-    }
-     std::vector<int> returny;
-
-    sf::Texture character;
-    if(!character.loadFromFile("1x.png")){
-        std::cout<<"ERROR";
-    }
-    Character posrac(character);
+    Character posrac;
+    posrac.wczytajtex();
     Menu menu(window.getSize().x,window.getSize().y);
     menu.wczytajprz();
     menu.play();
@@ -62,17 +47,12 @@ int main() {
             posrac.events(event, window);
         }
         window.clear(sf::Color::White);
-        for(auto &spr : backs){
-            window.draw(spr);
-        }
-        menu.drawGame(recs1, recs2, recs3, tab,window,posrac,texture,elapsed, deltaTime, enemy, coin, spike, chest);
-        menu.draw_prz(window, tab, event);
+        menu.drawGame(recs1, recs2, recs3, tab,window,posrac,texture,elapsed, deltaTime, enemy, coin, spike, chest, event);
         menu.pause();
         menu.resume();
         posrac.setView(posrac,view);
         window.setView(view);
-        menu.draw(window, event, posrac);
-        menu.checkmusic(event, window, tab);
+        menu.checkbuttons(event, window, tab);
         menu.wyzeruj(posrac, coin, enemy, tab);
         window.display();
     }
